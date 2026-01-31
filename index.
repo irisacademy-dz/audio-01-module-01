@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <title>Medical Audio Narration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            color: #e5e7eb;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: #020617;
+            padding: 30px;
+            border-radius: 12px;
+            width: 520px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        h1 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        p {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #cbd5f5;
+        }
+
+        button {
+            margin-top: 20px;
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1e40af;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Clinical Audio Recording</h1>
+
+    <p id="script">
+        The pain started about three days ago.
+        At first it was just a dull ache in my lower back,
+        but since yesterday it's become much sharper.
+        It shoots down my right leg when I try to stand up.
+        On a scale of one to ten, it's about a seven when I'm moving,
+        but only a three when I'm lying down.
+        I've taken paracetamol, but it doesn't seem to help much.
+    </p>
+
+    <button onclick="playVoice()">▶ Play Audio</button>
+</div>
+
+<script>
+function playVoice() {
+    const text = document.getElementById("script").innerText;
+    const utterance = new SpeechSynthesisUtterance(text);
+
+    // British English
+    utterance.lang = "en-GB";
+
+    // BBC-style tuning
+    utterance.rate = 0.88;   // slower, confident
+    utterance.pitch = 0.85;  // deeper, manly
+    utterance.volume = 1.0;
+
+    // Try to select a British male voice
+    const voices = speechSynthesis.getVoices();
+    const preferredVoice = voices.find(v =>
+        v.lang === "en-GB" && v.name.toLowerCase().includes("male")
+    ) || voices.find(v => v.lang === "en-GB");
+
+    if (preferredVoice) {
+        utterance.voice = preferredVoice;
+    }
+
+    speechSynthesis.cancel();
+    speechSynthesis.speak(utterance);
+}
+
+// Ensure voices load properly
+window.speechSynthesis.onvoiceschanged = () => {};
+</script>
+
+</body>
+</html>
